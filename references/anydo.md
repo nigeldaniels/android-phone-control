@@ -1,0 +1,24 @@
+# Any.do mobile controls
+
+Prefer Any.do's connected MCP tools for tasks, notes and subtasks. Discover their current schema. Use an available Any.do workflow skill for its preview/execute update mechanism; the phone UI is useful for unsupported reminder and priority fields.
+
+Resource IDs, layouts, and available features can change between app versions; inspect before using them.
+
+- Package: `com.anydo`. Resolve its launcher rather than hardcoding an activity forever.
+- A **Smart Grocery List** item opens an editor for rename, move and category. [Official documentation](https://support.any.do/en/articles/8635928-using-smart-grocery-lists-in-any-do) says these items do not support reminders/due dates and are excluded from All Tasks/My Day/Calendar. Preserve the user's requested destination: API type `personal_task` does not mean the list named Personal. Do not silently put shopping reminders in Personal to work around this limitation. A regular list can hold standard tasks and reminders; ask about the intended organization when Smart Grocery features conflict with required reminders.
+- A normal task's reminder entry is `com.anydo:id/containerReminder`. The Location tab is a `slideTextView` with text `Location`. `Add a new location` opens a favorite editor with `titleEditText`, `addressEditText`, and `doneButton`.
+- The favorite editor's text fields are `android.widget.MultiAutoCompleteTextView`, not ordinary EditText. Address searches may require selecting an autocomplete result to resolve a location. Verify the full address/map before saving.
+- Any.do may request foreground precise location, then background location through Android app permission settings. The permission controller package may be `com.google.android.permissioncontroller` while resource IDs use `com.android.permissioncontroller`. Inspect the actual screen. Enable only permissions needed for the requested feature.
+- Personal task priority uses the app's **Priority** tag. Inspect Add Tags and verify the saved tag. A priority note alone does not set the app's priority; applying a shared Priority tag does not necessarily create a unique global rank.
+
+[Official reminder instructions](https://support.any.do/en/articles/8635391-location-reminders-for-personal-tasks) describe choosing a place, Arrive/Leave, and Save. Only one reminder type can be active on a task. Multiple destination alerts may therefore require separate ordinary personal tasks; verify the current UI before restructuring anything.
+
+The documented workflow has no distance/radius field. The New Location editor and Arrive/Leave selector described here do not offer a radius setting. Do not claim a requested distance is configured unless the current app exposes and preserves that value. Writing a radius in notes or a location title does not configure a geofence of that size. Ask before substituting Any.do's default behavior or another app. [Automate's Location at block](https://llamalab.com/automate/doc/block/location_at.html) supports a numeric radius, but requires a separate app and workflow; it is not an Any.do setting.
+
+After saving an arrival alert, close and reopen it to verify the place and Arrive trigger. Task APIs may not expose the location reminder; use the mobile UI for that readback. Verify actual delivery separately by testing the saved reminder with the relevant permissions active.
+
+Saving can require several steps: select the saved place and Arrive → **Set** → reminder summary **Save** → task details **Save** when shown. Inspect each transition; do not assume Set closes the reminder dialog. The reopened summary should say “Remind me when I arrive” and `alertToggle` should be checked. The task details also show `taskDetailsReminderAlertToggle` checked. If interrupted, reopen the task first: the reminder may already have persisted before the task-level Save.
+
+A `list_id` move into Smart Grocery can preserve task IDs, notes and subtasks through MCP, but that does not establish that existing arrival alerts remain functional. After a move, Universal Search may open the grocery editor instead of full reminder details. Report that limitation when it prevents verification. The list menu's **Convert to Regular List** restores standard task features while keeping a single named list, but removes automatic aisle categories and cannot be reversed directly; obtain the user's decision before that broader change.
+
+With several favorites, Add a new location can be below the visible portion of the location list. Scroll that list using inspected bounds. The address picker may reverse-geocode a named store into a shopping-center address; inspect the location and do not claim address-label equality proves the exact pin. Separate reminder tasks may remain active when a related shopping task is completed; tell the user to complete them as well if they want repeated alerts to stop.

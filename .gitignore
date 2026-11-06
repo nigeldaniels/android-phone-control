@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+*.png
+*.jpg
+*.jpeg
+*.xml
+*.log
+*.jsonl
+state/
+artifacts/
+adbkey*

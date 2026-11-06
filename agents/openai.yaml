@@ -1,0 +1,4 @@
+interface:
+  display_name: "Android Phone Control"
+  short_description: "Operate Android apps over paired Wi-Fi ADB"
+  default_prompt: "Use $android-phone-control to inspect my connected phone and complete the requested app action."
